@@ -19,7 +19,7 @@ function Get-MondayBoardItems{
     param (
         [Parameter(Mandatory = $true)][string]$APIKey,
         [Parameter(Mandatory = $true)][string]$BoardID,
-        [string]$ItemResults = 25, 
+        [string]$ItemResults = 200, 
         [string]$APIurl = "https://api.monday.com/v2/",
         [array]$ColumnNames = $null
 	)
@@ -28,7 +28,7 @@ function Get-MondayBoardItems{
 
     if ($null -eq $ColumnNames){
         #Constructing the GraphQL query in lieu of specific column names being supplied
-        $query = "query { boards( ids: $BoardID ) { items_page( limit: $MondayAPIQuan){ items { id  name column_values { text id } } } } }"
+        $query = "query { boards( ids: $BoardID ) { items_page( limit: $itemResults){ items { id  name column_values { text id } } } } }"
     }
 
     else{
@@ -41,7 +41,7 @@ function Get-MondayBoardItems{
         $columnQuery = $columnQueryParts -join ", "
 
         #Construct the query
-        $query = "query { boards( ids: $BoardID ) { items_page( limit: $MondayAPIQuan){ items { id name column_values( ids: [$columnQuery] ) { text id } } } } }"
+        $query = "query { boards( ids: $BoardID ) { items_page( limit: $itemResults){ items { id name column_values( ids: [$columnQuery] ) { text id } } } } }"
     }
 
     # Set up the HTTP request headers
